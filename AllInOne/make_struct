@@ -9,6 +9,9 @@
 
 #generate content of the src directory
 CDIR=`pwd`
+mkdir $CDIR/bin
+mkdir $CDIR/src
+mkdir $CDIR/obj
 
 rm -f $CDIR/src/*
 

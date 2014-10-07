@@ -21,7 +21,7 @@ void BowTranslate::Process(protointerface::WorkRequest &request_response)
 
 		//do work here
 		//ofstream of("/home/ireznice/BOWin", std::ofstream::out);
-		ofstream of2("/home/ireznice/BOWout", std::ofstream::out);
+		//ofstream of2("/home/ireznice/BOWout", std::ofstream::out);
 
 		int size = request_response.blob().data().size();
 		float *buf = (float *)request_response.blob().data().data();
@@ -79,15 +79,14 @@ void BowTranslate::Process(protointerface::WorkRequest &request_response)
 
 		}
 
-		of2 << "0";
-		for(int i=0; i<oR.size(); i++)
-		{
-			if(oR[i] != 0.0f)
-				of2 << " " << ((int)i+1) << ":" << oR[i];
-		}
-
-		of2 << endl;
-		of2.close();
+		//of2 << "0";
+		//for(int i=0; i<oR.size(); i++)
+		//{
+		//	if(oR[i] != 0.0f)
+		//		of2 << " " << ((int)i+1) << ":" << oR[i];
+		//}
+		//of2 << endl;
+		//of2.close();
 
 		protointerface::BlobFloat blobfloat;
 		int dim = 6 + this->codebookNeighbors * 2; //number of columns
