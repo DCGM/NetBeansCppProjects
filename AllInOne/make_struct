@@ -1,0 +1,69 @@
+#!/bin/bash
+
+#
+# this script generates the content of src directory and Makefile
+# just subsequently type make to build utilities
+# custom libraries/includes paths can be given in Makefile.i file
+#
+#
+
+#generate content of the src directory
+CDIR=`pwd`
+
+rm -f $CDIR/src/*
+
+(
+    find ../* | grep "\.h$"
+    find ../* | grep "\.cpp$"
+    find ../* | grep "\.cc$"
+) | for i in `cat` ; do
+
+    N=`echo $i | sed s"|.*/||"`
+    ln -s ../$i ./src/$N
+
+done
+
+
+#generate Makefile
+OF=Makefile
+cat Makefile.i >$OF
+
+#
+#here default all targers are specified!!!!
+#
+echo "all: SimpleFE SimpleBOW SimpleSearch" >>$OF
+echo -e "\t" >>$OF
+echo "clean:" >>$OF
+echo -e "\trm -f ./src/*" >>$OF
+echo -e "\trm -f ./bin/*" >>$OF
+echo -e "\trm -f ./obj/*" >>$OF
+echo -e "\trm -f Makefile" >>$OF
+
+
+(
+    find ./src/* | grep "\.cpp$"
+    find ./src/* | grep "\.cc$"
+) | for i in `cat` ; do
+
+    echo `echo $i | sed s"|\.[^\.]*$|\.o|"|sed s"|^\.\/src|\.\/obj|"`:$i >>$OF
+    echo -e "\t\$(CXX) \$(CXXFLAGS) -c \$< -o \$@ " >>$OF
+done
+
+#
+# Here all needed programs are compiled
+#
+
+#simpleBOW
+echo "SimpleBOW: ./obj/BowTranslate.o ./obj/ERCTree.o ./obj/FilterBOW.o ./obj/ProjKMeans.o ./obj/interfaces.o ./obj/RabbitMQCommunication.o ./obj/interface.pb.o ./obj/InfMethods.o" >>$OF
+echo -e "\t \$(CXX) \$+ -o ./bin/\$@  \$(CXXFLAGS) \$(LIBS)" >>$OF
+
+#simpleFE
+echo "SimpleFE: ./obj/SimpleFE.o ./obj/FilterFE.o ./obj/interfaces.o ./obj/RabbitMQCommunication.o ./obj/interface.pb.o ./obj/OpenCVFE.o" >>$OF
+echo -e "\t \$(CXX) \$+ -o ./bin/\$@  \$(CXXFLAGS) \$(LIBS)" >>$OF
+
+#simpleSearch
+echo "SimpleSearch: ./obj/SimpleSearch.o ./obj/FilterSearch.o ./obj/interfaces.o ./obj/RabbitMQCommunication.o ./obj/interface.pb.o" >>$OF
+echo -e "\t \$(CXX) \$+ -o ./bin/\$@  \$(CXXFLAGS) \$(LIBS)" >>$OF
+
+
+

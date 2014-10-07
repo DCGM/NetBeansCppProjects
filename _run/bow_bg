@@ -1,0 +1,9 @@
+#!/bin/bash
+
+export LD_LIBRARY_PATH=/home/ireznice/local/lib:/home/ireznice/local/lib/x86_64-linux-gnu
+
+killall simplebow
+../SimpleBOW/dist/Release/GNU-Linux-x86/simplebow &
+
+
+
